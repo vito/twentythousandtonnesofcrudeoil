@@ -24,8 +24,14 @@ func installEnv(parser *flags.Parser, prefix string) {
 		}
 	})
 
+	origHandler := parser.CommandHandler
+
 	parser.CommandHandler = func(command flags.Commander, args []string) error {
 		clearEnv(parser, prefix)
+
+		if origHandler != nil {
+			return origHandler(command, args)
+		}
 
 		if command == nil {
 			return nil
